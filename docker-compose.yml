@@ -1,0 +1,34 @@
+version: "2"
+services:
+  base:
+    build:
+      context: .
+    image: txtboard-base
+    volumes:
+      - .:/go/src/github.com/grahamjleach/txtboard
+
+  gofmt:
+    image: txtboard-base
+    command: ["gofmt", "-w", "./"]
+    volumes_from:
+      - base
+
+  dep:
+    image: txtboard-base
+    command: ["make", "dep"]
+    volumes_from:
+      - base
+
+  build:
+    image: txtboard-base
+    command: ["make", "build"]
+    volumes_from:
+      - base
+
+  txtboard:
+    image: txtboard-base
+    command: ["go", "run", "./main.go"]
+    stdin_open: true
+    tty: true
+    volumes_from:
+      - base
